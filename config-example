@@ -1,0 +1,5 @@
+export CLOUDANT_ACCOUNT='chatroom'
+export CLOUDANT_USER='john'
+export CLOUDANT_PASSWORD='mysupersecretpassword'
+export CLOUDANT_ADMIN_USER='chatroom'
+export CLOUDANT_ADMIN_PASSWORD='supersecretadminpassword'

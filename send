@@ -1,0 +1,17 @@
+#!/bin/bash
+
+time=`date +%s`
+message="$1"
+source check-variables
+if [ -z "$1" ]; then
+    echo '$1 is empty, no message to send'
+    exit
+fi
+curl "https://${CLOUDANT_USER}:${CLOUDANT_PASSWORD}@${CLOUDANT_ACCOUNT}.cloudant.com/${CLOUDANT_USER}" -X POST -H 'content-type: application/json' -d @- << END
+{
+  "type": "update",
+  "text": "$1",
+  "time": ${time}
+}
+END
+

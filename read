@@ -1,0 +1,21 @@
+#!/bin/bash
+
+source check-variables
+
+
+declare -A seqs
+while read user ; do
+    seqs["${user}"]=`curl -s "${CLOUDANT_BASE_URL}/${user}/_changes?limit=0&descending=true" | jq -r '.last_seq'`
+done < <( echo -e "kim\nsimon\ntestuser" )
+
+unbuffer curl -s "${CLOUDANT_BASE_URL}/_db_updates?feed=continuous" | while read line; do
+    sender=`echo "${line}" | jq -r '.dbname'`
+    type=`echo "${line}" | jq -r '.type'`
+    if [[ "$type" = "updated" ]] && [[ $sender != _* ]]; then
+        response=`curl -s "${CLOUDANT_BASE_URL}/${sender}/_changes?since=${seqs[${sender}]}&include_docs=true"`
+        echo "${response}" | jq -r '.results[] | .doc.text' | while read message; do
+            echo "${sender}: ${message}"
+        done
+        seqs[$sender]=`echo "${response}" | jq -r '.last_seq'`
+    fi
+done

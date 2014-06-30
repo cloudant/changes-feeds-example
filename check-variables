@@ -1,0 +1,16 @@
+#!/bin/bash
+
+if [ -z "$CLOUDANT_ACCOUNT" ]; then
+    echo 'CLOUDANT_ACCOUNT not set'
+    exit
+fi
+if [ -z "$CLOUDANT_USER" ]; then
+    echo 'CLOUDANT_USER not set'
+    exit
+fi
+if [ -z "$CLOUDANT_PASSWORD" ]; then
+    echo 'CLOUDANT_PASSWORD not set'
+    exit
+fi
+CLOUDANT_BASE_URL="https://${CLOUDANT_USER}:${CLOUDANT_PASSWORD}@${CLOUDANT_ACCOUNT}.cloudant.com"
+
