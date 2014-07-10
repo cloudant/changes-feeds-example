@@ -7,7 +7,7 @@ declare -A seqs
 while read user ; do
     seqs["${user}"]=`curl -s "${CLOUDANT_BASE_URL}/${user}/_changes?limit=0&descending=true" | jq -r '.last_seq'`
 done < <( echo -e "kim\nsimon\ntestuser" )
-
+#TODO: get list of users from config doc
 unbuffer curl -s "${CLOUDANT_BASE_URL}/_db_updates?feed=continuous" | while read line; do
     sender=`echo "${line}" | jq -r '.dbname'`
     type=`echo "${line}" | jq -r '.type'`
