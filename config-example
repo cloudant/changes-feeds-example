@@ -1,3 +1,11 @@
+# This file sets some environment variables needed by the other scripts
+# Make a copy of this file, change the values in it and source the resulting file before you call any of the scripts!
+# 
+# $ cp config-example myconfig
+# $ vi myconfig
+# make changes...
+# $ source myconfig
+
 export CLOUDANT_ACCOUNT='accountname' # as in accountname.cloudant.com
 export CLOUDANT_USER='john' # user for HTTP authentication
 export CLOUDANT_PASSWORD='mysupersecretpassword' # password for HTTP authentication

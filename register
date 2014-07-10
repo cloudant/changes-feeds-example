@@ -1,8 +1,13 @@
 #!/bin/bash
 
+# this script registers a new user
+# It needs two arguments, the user name and the password of the user to be registered
+# Some environment variables also need to be set. See the config-example file.
+
 source check-variables
 source check-admin-variables
 
+# check whether arguments have been provided
 if [ -z "$1" ]; then
     echo 'no user name given'
     exit
@@ -13,9 +18,14 @@ if [ -z "$2" ]; then
     exit
 fi
 password="$2"
+
+# choose a random salt for the user document
 salt="$RANDOM"
+
+# compute the sha1 hash of the password and the salt
 sha1=`echo -n "${password}${salt}" | openssl sha1 | cut -f 2 -d ' '`
 
+# get the current revision of the user document
 rev=`curl "${CLOUDANT_ADMIN_BASE_URL}/_users/org.couchdb.user:${user}" | jq -r '._rev'`
 if [[ "${rev}" == "null" ]] ; then
     ifmatch=''
@@ -25,18 +35,21 @@ else
     ifmatchh='-H'
 fi
 
+# create a new database to hold the user's messages
 if curl -sf "${CLOUDANT_ADMIN_BASE_URL}/$user" -X PUT ; then
     echo 'registering...'
-else
+else #user already exists
     echo "Username '${user}' not available."
     exit
 fi
 
-curl "${CLOUDANT_ADMIN_BASE_URL}/_users/org.couchdb.user:${user}" -X PUT "${ifmatchh}" "${ifmatch}" -d @- << END1
+# create the user document in the authentication database
+curl -s "${CLOUDANT_ADMIN_BASE_URL}/_users/org.couchdb.user:${user}" -X PUT "${ifmatchh}" "${ifmatch}" -d @- << END1
 {
   "salt": "${salt}",
   "password_sha": "${sha1}",
   "roles": [
+    "_all_dbs",
     "_db_updates"
   ],
   "name": "${user}",
@@ -44,6 +57,7 @@ curl "${CLOUDANT_ADMIN_BASE_URL}/_users/org.couchdb.user:${user}" -X PUT "${ifma
 }
 END1
 
+# create a security document in the user's database to give everyone read access and the user write access
 curl "${CLOUDANT_ADMIN_BASE_URL}/${user}/_security" -X PUT -d @- << END2
 {
   "cloudant": {

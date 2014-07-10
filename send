@@ -4,9 +4,11 @@ time=`date +%s`
 message="$1"
 source check-variables
 if [ -z "$1" ]; then
-    echo '$1 is empty, no message to send'
+    echo 'send needs at least one argument, the message to send'
     exit
 fi
+
+# add a new document with the message to the user's database. This will show up as an event in the global changes feed as well as in the database-level changes feed
 curl "https://${CLOUDANT_USER}:${CLOUDANT_PASSWORD}@${CLOUDANT_ACCOUNT}.cloudant.com/${CLOUDANT_USER}" -X POST -H 'content-type: application/json' -d @- << END
 {
   "type": "update",
