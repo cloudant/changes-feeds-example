@@ -1,5 +1,5 @@
-export CLOUDANT_ACCOUNT='chatroom'
-export CLOUDANT_USER='john'
-export CLOUDANT_PASSWORD='mysupersecretpassword'
-export CLOUDANT_ADMIN_USER='chatroom'
-export CLOUDANT_ADMIN_PASSWORD='supersecretadminpassword'
+export CLOUDANT_ACCOUNT='accountname' # as in accountname.cloudant.com
+export CLOUDANT_USER='john' # user for HTTP authentication
+export CLOUDANT_PASSWORD='mysupersecretpassword' # password for HTTP authentication
+export CLOUDANT_ADMIN_USER='username' # admin user name for HTTP authentication, used to register new users
+export CLOUDANT_ADMIN_PASSWORD='supersecretadminpassword' # password for admin user
